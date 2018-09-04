@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <title>websocket</title>
+</head>
+<style>
+.container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+.button {
+    border: 1px solid #fff;
+    width: 200px;
+    height: 60px;
+    font-size: 20px;
+    box-shadow: 1px 1px 7px 1px #ccccccd6;
+    outline: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+    line-height: 60px;
+    text-align: center;
+    display: inline-block;
+}
+.button:active {
+    border: 1px solid #ccccccd6;
+    box-shadow: none;
+    
+}
+input[disabled]:hover{
+    cursor:not-allowed;
+}
+.button:disabled {
+    box-shadow: none;
+    border: 1px solid #ccccccd6;
+}
+.progress {
+    border: none;
+    display: block;
+    width: 100%;
+    font-size: 20px;
+    text-align: center;
+}
+</style>
+<body>
+    <div class="container">
+        <input type="button" class="button" id="start" value="Start"></input>
+        <input style="margin-left: 40px;" type="button" class="button" id="stop" value="Stop" ></input>
+        <input class="progress" type="text" id="pl" value="" readonly="readonly"/>
+    </div>
+</body>
+<script src="https://cdn.bootcss.com/socket.io/2.1.0/socket.io.js"></script>
+<script type="text/javascript">
+     window.onload = function () {
+      const plElement = document.getElementById('pl');
+      const startElement = document.getElementById('start');
+      const socket = io('ws://127.0.0.1:7001');
+      socket.on('connect', () => {
+        const id = socket.id;
+        console.log('#connect,', id, socket);
+      });
+      socket.on('message', msg => {
+        console.log('#online,', msg);
+        plElement.value = msg;
+      });
+      socket.on('crawler', msg => {
+          console.log('#crawler,', msg);
+        if (msg === 'isCrawler') {
+            startElement.disabled = true;
+        } else if (msg === 'crawlerOver') {
+            startElement.disabled = false;
+        }
+        
+      });
+      socket.on('disconnect', msg => {
+        console.log('#disconnect', msg);
+      });
+      socket.on('error', () => {
+        console.log('#error');
+      });
+      window.socket = socket;
+    };
+    startElement.onclick = function () {
+        window.socket.send('start');
+    }
+    document.getElementById("stop").onclick = function () {
+        window.socket.send('stop');
+    }
+</script>
