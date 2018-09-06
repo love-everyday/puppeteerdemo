@@ -2,15 +2,16 @@
 
 const Controller = require('egg').Controller;
 
-
 class NspController extends Controller {
   async exchange() {
-    const { ctx, app } = this;
+    const { ctx } = this;
     const message = ctx.args[0] || {};
     if (message === 'start') {
-      ctx.service.crawler.startCrawler();
+      this.service.crawler.startCrawler();
     } else if (message === 'stop') {
-      ctx.service.crawler.stopCrawler();
+      this.service.crawler.stopCrawler();
+    } else if (message === 'download') {
+      ctx.service.crawler.downloadCrawlerFile();
     }
   }
 

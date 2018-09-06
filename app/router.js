@@ -7,6 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/home', controller.home.index);
   router.get('/kkndme', controller.kkndme.index);
+  router.get('/download/:file', controller.kkndme.download);
   app.io.of('/').route('message', app.io.controller.nsp.exchange);
   // app.io.route('disconnect', app.controller.kkndme.disconnect);
 };

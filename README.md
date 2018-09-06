@@ -1,5 +1,12 @@
 # Spider
+This is a demo, which used `Puppeteer`、`Websocket` and `Egg`.<br>
+* [Puppeteer](https://github.com/GoogleChrome/puppeteer)
+* [Socket.io](https://socket.io/get-started/chat/#The-web-framework)
+* [Egg Socket](https://eggjs.org/en/tutorials/socketio.html)
+* [Egg Socket Demo](https://github.com/eggjs/egg-socket.io)
 
+
+<img src="README_Images/demo.png" style="max-height: 400px">
 
 
 ## QuickStart

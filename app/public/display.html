@@ -26,6 +26,9 @@
     line-height: 60px;
     text-align: center;
     display: inline-block;
+    background-color: #fff;
+    margin: 10px 20px 10px 20px;
+    color: #000;
 }
 .button:active {
     border: 1px solid #ccccccd6;
@@ -51,14 +54,18 @@ input[disabled]:hover{
     <div class="container">
         <input type="button" class="button" id="start" value="Start"></input>
         <input style="margin-left: 40px;" type="button" class="button" id="stop" value="Stop" ></input>
+        <input style="margin-left: 40px;" type="button" class="button" id="download" value="Download" disabled />
         <input class="progress" type="text" id="pl" value="" readonly="readonly"/>
+        <a style="display: none;" href="" id="download-file"></a>
     </div>
 </body>
 <script src="https://cdn.bootcss.com/socket.io/2.1.0/socket.io.js"></script>
 <script type="text/javascript">
-     window.onload = function () {
-      const plElement = document.getElementById('pl');
-      const startElement = document.getElementById('start');
+    const plElement = document.getElementById('pl');
+    const startElement = document.getElementById('start');
+    const downloadElement = document.getElementById('download');
+    const downloadFileElement = document.getElementById('download-file');
+    window.onload = function () {
       const socket = io('ws://127.0.0.1:7001');
       socket.on('connect', () => {
         const id = socket.id;
@@ -72,10 +79,20 @@ input[disabled]:hover{
           console.log('#crawler,', msg);
         if (msg === 'isCrawler') {
             startElement.disabled = true;
+            downloadElement.disabled = true;
         } else if (msg === 'crawlerOver') {
             startElement.disabled = false;
+            downloadElement.disabled = false;
+        } else if (msg === 'crawlerDownload') {
+            startElement.disabled = false;
+            downloadElement.disabled = false;
         }
-        
+      });
+      socket.on('download', msg => {
+        console.log('#download,', msg);
+        downloadFileElement.href = `http://localhost:7001${msg}`;
+        downloadFileElement.click();
+        downloadFileElement.href = '';
       });
       socket.on('disconnect', msg => {
         console.log('#disconnect', msg);
@@ -87,6 +104,9 @@ input[disabled]:hover{
     };
     startElement.onclick = function () {
         window.socket.send('start');
+    }
+    downloadElement.onclick = function () {
+        window.socket.send('download');
     }
     document.getElementById("stop").onclick = function () {
         window.socket.send('stop');

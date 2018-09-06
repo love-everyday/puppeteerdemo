@@ -11,6 +11,17 @@ class KKndmeController extends Controller {
     ctx.service.crawler.checkCrawler();
   }
 
+  async download() {
+    const filename = this.ctx.params.file;
+    console.log(filename);
+
+    if (!filename) {
+      return;
+    }
+    this.ctx.attachment(filename);
+    this.ctx.set('Content-Type', 'application/octet-stream');
+    this.ctx.body = fs.createReadStream(`./download/${filename}`);
+  }
 
 }
 
